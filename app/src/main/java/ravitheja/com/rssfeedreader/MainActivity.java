@@ -1,11 +1,11 @@
 package ravitheja.com.rssfeedreader;
 
 import android.app.ProgressDialog;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,17 +18,20 @@ public class MainActivity extends AppCompatActivity implements ParserListener {
     private ListAdapter adapter;
     private URL feedURL;
     private ProgressDialog progressDialog;
-    FeedExtractor extractor;
+    private FeedExtractor extractor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ActionBar bar = this.getSupportActionBar();
+        bar.setTitle("Top News");
+
         try {
-            feedURL = new URL("http://www.feedforall.com/sample.xml");
+            feedURL = new URL("http://feeds.bbci.co.uk/news/rss.xml");
             listView = (ListView) findViewById(R.id.listView);
-            adapter = new ListAdapter(this.getApplicationContext(),feedURL);
+            adapter = new ListAdapter(this.getApplicationContext());
             listView.setAdapter(adapter);
 
             // starting the background parsing thread...
@@ -57,7 +60,9 @@ public class MainActivity extends AppCompatActivity implements ParserListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
 
+        }
         return super.onOptionsItemSelected(item);
     }
 

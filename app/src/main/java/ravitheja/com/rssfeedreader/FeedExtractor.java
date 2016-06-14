@@ -5,8 +5,10 @@ import android.util.Log;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 
 import java.net.URL;
@@ -60,11 +62,16 @@ public class FeedExtractor extends Thread {
                 Element descElement = (Element) descList.item(0);
                 descList = descElement.getChildNodes();
 
+                NodeList imageList = element.getElementsByTagName("media:thumbnail");
+                Element imageElement = (Element) imageList.item(0);
+                String imageURL = imageElement.getAttribute("url");
+
                 rssElement.setTitle((titleList.item(0)).getNodeValue());
                 rssElement.setLink((linkList.item(0)).getNodeValue());
                 rssElement.setDescription((descList.item(0)).getNodeValue());
+                rssElement.setImageURL(imageURL);
 
-                Log.d("RSS Feed Extractor",rssElement.toString());
+                //Log.d("RSS Feed Extractor",rssElement.toString());
 
                 items.add(rssElement);
             }

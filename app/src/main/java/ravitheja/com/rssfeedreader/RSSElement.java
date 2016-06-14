@@ -6,7 +6,7 @@ package ravitheja.com.rssfeedreader;
 
 public class RSSElement {
 
-    private String title, link, description;
+    private String title, link, description, imageURL;
 
     public RSSElement() {
 
@@ -16,6 +16,14 @@ public class RSSElement {
         this.title = title;
         this.link = link;
         this.description = description;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     public void setTitle(String title) {
