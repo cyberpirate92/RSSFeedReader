@@ -1,5 +1,6 @@
 package ravitheja.com.rssfeedreader;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,7 @@ public class MainActivity extends AppCompatActivity implements ParserListener {
     private ListView listView;
     private ListAdapter adapter;
     private URL feedURL;
+    private ProgressDialog progressDialog;
     FeedExtractor extractor;
 
     @Override
@@ -26,7 +28,10 @@ public class MainActivity extends AppCompatActivity implements ParserListener {
             listView = (ListView) findViewById(R.id.listView);
             adapter = new ListAdapter(this.getApplicationContext(),feedURL);
             listView.setAdapter(adapter);
+
+            // starting the background parsing thread...
             extractor = new FeedExtractor(feedURL,this);
+            extractor.start();
         }
         catch(MalformedURLException mue) {
             displayToast("Invalid URL");
@@ -40,16 +45,20 @@ public class MainActivity extends AppCompatActivity implements ParserListener {
     @Override
     public void didStartParsing() {
         displayToast("Please wait... fetching feeds");
+        progressDialog = ProgressDialog.show(this, "Loading", "Please wait", true);
     }
 
     @Override
     public void didFinishParsing() {
         displayToast("Parsing complete");
-
+        adapter.clear();
+        adapter.addItems(extractor.getFeedList());
+        progressDialog.dismiss();
     }
 
     @Override
     public void didFinishWithException(Exception e) {
         displayToast("Parsing could not be completed due to errors");
+        progressDialog.dismiss();
     }
 }

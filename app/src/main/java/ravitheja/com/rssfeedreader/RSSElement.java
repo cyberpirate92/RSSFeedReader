@@ -1,7 +1,7 @@
 package ravitheja.com.rssfeedreader;
 
 /**
- * Created by zen on 14/6/16.
+ * POJO class to store a single RSS item
  */
 
 public class RSSElement {
@@ -43,5 +43,8 @@ public class RSSElement {
         return description;
     }
 
-
+    @Override
+    public String toString() {
+        return this.title + " | " + this.link + " | " + this.description;
+    }
 }

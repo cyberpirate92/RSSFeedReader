@@ -16,10 +16,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
- * Created by zen on 14/6/16.
+ * Thread where the actual RSS XML is feteched from the internet and parsed.
  */
 
-public class FeedExtractor implements Runnable {
+public class FeedExtractor extends Thread {
 
     private URL feedURL;
     private volatile ArrayList<RSSElement> items;
@@ -27,7 +27,7 @@ public class FeedExtractor implements Runnable {
 
     public FeedExtractor(URL url, ParserListener listener) {
         this.feedURL = url;
-        this.items = new ArrayList<RSSElement>();
+        this.items = new ArrayList<>();
         this.callbackListener = listener;
     }
 
@@ -49,12 +49,22 @@ public class FeedExtractor implements Runnable {
                 Element element = (Element) node;
 
                 NodeList titleList = element.getElementsByTagName("title");
-                NodeList linkList = element.getElementsByTagName("link");
-                NodeList descList = element.getElementsByTagName("description");
+                Element titleElement = (Element) titleList.item(0);
+                titleList = titleElement.getChildNodes();
 
-                rssElement.setTitle(((Node)titleList.item(0)).getNodeValue());
-                rssElement.setLink(((Node)linkList.item(0)).getNodeValue());
-                rssElement.setDescription(((Node)descList.item(0)).getNodeValue());
+                NodeList linkList = element.getElementsByTagName("link");
+                Element linkElement = (Element) linkList.item(0);
+                linkList =  linkElement.getChildNodes();
+
+                NodeList descList = element.getElementsByTagName("description");
+                Element descElement = (Element) descList.item(0);
+                descList = descElement.getChildNodes();
+
+                rssElement.setTitle((titleList.item(0)).getNodeValue());
+                rssElement.setLink((linkList.item(0)).getNodeValue());
+                rssElement.setDescription((descList.item(0)).getNodeValue());
+
+                Log.d("RSS Feed Extractor",rssElement.toString());
 
                 items.add(rssElement);
             }
@@ -64,6 +74,10 @@ public class FeedExtractor implements Runnable {
             Log.d("RSS reader",e.toString());
             didFinishWithException(e);
         }
+    }
+
+    public ArrayList<RSSElement> getFeedList() {
+        return this.items;
     }
 
     private void didStartParsing() {
