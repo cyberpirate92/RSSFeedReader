@@ -3,6 +3,8 @@ package ravitheja.com.rssfeedreader;
 import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -49,6 +51,17 @@ public class MainActivity extends AppCompatActivity implements ParserListener {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void didFinishParsing() {
         displayToast("Parsing complete");
         adapter.clear();
@@ -61,4 +74,6 @@ public class MainActivity extends AppCompatActivity implements ParserListener {
         displayToast("Parsing could not be completed due to errors");
         progressDialog.dismiss();
     }
+
+
 }

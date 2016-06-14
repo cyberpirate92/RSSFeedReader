@@ -1,6 +1,7 @@
 package ravitheja.com.rssfeedreader;
 
 import android.content.Context;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,7 +77,7 @@ public class ListAdapter extends BaseAdapter {
 
         RSSElement element = this.elements.get(position);
         titleView.setText(element.getTitle());
-        descriptionView.setText(element.getDescription());
+        descriptionView.setText(Html.fromHtml(element.getDescription()));
 
         return row;
     }
