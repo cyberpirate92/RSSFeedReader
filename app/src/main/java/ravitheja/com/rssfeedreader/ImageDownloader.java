@@ -18,11 +18,13 @@ public class ImageDownloader extends Thread implements ImageDownloadListener {
     private ImageDownloadListener listener;
     private Bitmap downloadedImage;
     private ImageView targetImageView;
+    private int position;
 
-    public ImageDownloader(URL imageURL, ImageDownloadListener listener, ImageView imageView) {
+    public ImageDownloader(URL imageURL, ImageDownloadListener listener, ImageView imageView, int position) {
         this.imageURL = imageURL;
         this.listener = listener;
         this.targetImageView = imageView;
+        this.position = position;
     }
 
     public Bitmap getDownloadedImage() {
@@ -35,7 +37,7 @@ public class ImageDownloader extends Thread implements ImageDownloadListener {
             this.hasStartedDownload();
             InputStream inputStream = imageURL.openStream();
             downloadedImage = BitmapFactory.decodeStream(inputStream);
-            this.hasCompletedDownload();
+            this.hasCompletedDownload(new ImageStore(this.downloadedImage,position));
             this.targetImageView.setImageBitmap(this.downloadedImage);
         }
         catch(Exception e) {
@@ -63,7 +65,7 @@ public class ImageDownloader extends Thread implements ImageDownloadListener {
     }
 
     @Override
-    public void hasCompletedDownload() {
+    public void hasCompletedDownload(final ImageStore imageStore) {
         if(listener == null) {
             return;
         }
@@ -71,12 +73,12 @@ public class ImageDownloader extends Thread implements ImageDownloadListener {
             ((Activity) listener).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    listener.hasCompletedDownload();
+                    listener.hasCompletedDownload(imageStore);
                 }
             });
         }
         else {
-            listener.hasCompletedDownload();
+            listener.hasCompletedDownload(imageStore);
         }
     }
 

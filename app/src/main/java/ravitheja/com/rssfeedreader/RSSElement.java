@@ -1,5 +1,7 @@
 package ravitheja.com.rssfeedreader;
 
+import android.graphics.Bitmap;
+
 /**
  * POJO class to store a single RSS item
  */
@@ -7,9 +9,18 @@ package ravitheja.com.rssfeedreader;
 public class RSSElement {
 
     private String title, link, description, imageURL;
+    private Bitmap imageBitmap;
+
+    public Bitmap getImageBitmap() {
+        return imageBitmap;
+    }
+
+    public void setImageBitmap(Bitmap imageBitmap) {
+        this.imageBitmap = imageBitmap;
+    }
 
     public RSSElement() {
-
+        this.imageBitmap = null;
     }
 
     public RSSElement(String title, String link, String description) {
@@ -40,7 +51,6 @@ public class RSSElement {
 
     public String getTitle() {
         return title;
-
     }
 
     public String getLink() {

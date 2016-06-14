@@ -5,6 +5,6 @@ package ravitheja.com.rssfeedreader;
  */
 public interface ImageDownloadListener {
     void hasStartedDownload();
-    void hasCompletedDownload();
+    void hasCompletedDownload(ImageStore imageStore);
     void hasFailedToDownload();
 }

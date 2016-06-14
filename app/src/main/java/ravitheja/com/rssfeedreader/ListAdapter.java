@@ -2,6 +2,7 @@ package ravitheja.com.rssfeedreader;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.media.Image;
 import android.text.Html;
@@ -73,17 +74,19 @@ public class ListAdapter extends BaseAdapter implements ImageDownloadListener {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View row = layoutInflater.inflate(R.layout.list_row, parent, false);
-
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        if(convertView == null ) {
+            LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View row = layoutInflater.inflate(R.layout.list_row, parent, false);
+            convertView = row;
+        }
         TextView titleView, descriptionView;
         ImageView imageView;
 
-        titleView = (TextView) row.findViewById(R.id.titleView);
-        descriptionView = (TextView) row.findViewById(R.id.descriptionView);
-        imageView = (ImageView) row.findViewById(R.id.imageView);
+        titleView = (TextView) convertView.findViewById(R.id.titleView);
+        descriptionView = (TextView) convertView.findViewById(R.id.descriptionView);
+        imageView = (ImageView) convertView.findViewById(R.id.imageView);
 
         RSSElement element = this.elements.get(position);
         titleView.setText(element.getTitle());
@@ -92,18 +95,23 @@ public class ListAdapter extends BaseAdapter implements ImageDownloadListener {
         descriptionView.setTypeface(descriptionFont);
 
         // starting the image download thread...
-        if(element.getImageURL() != null) {
-            try {
-                URL imageURL = new URL(element.getImageURL());
-                ImageDownloader downloader = new ImageDownloader(imageURL, this, imageView);
-                downloader.start();
-            }
-            catch (Exception e) {
-                Log.d("RSS Feed Extractor","Error in image url: "+e);
+        Bitmap bitmap = this.elements.get(position).getImageBitmap();
+        if(bitmap == null ) {
+            if (element.getImageURL() != null) {
+                try {
+                    URL imageURL = new URL(element.getImageURL());
+                    ImageDownloader downloader = new ImageDownloader(imageURL, this, imageView, position);
+                    downloader.start();
+                } catch (Exception e) {
+                    Log.d("RSS Feed Extractor", "Error in image url: " + e);
+                }
             }
         }
+        else {
+            imageView.setImageBitmap(bitmap);
+        }
 
-        return row;
+        return convertView;
     }
 
     @Override
@@ -112,8 +120,8 @@ public class ListAdapter extends BaseAdapter implements ImageDownloadListener {
     }
 
     @Override
-    public void hasCompletedDownload() {
-
+    public void hasCompletedDownload(ImageStore imageStore) {
+        this.elements.get(imageStore.getPosition()).setImageBitmap(imageStore.getBitmap());
     }
 
     @Override
