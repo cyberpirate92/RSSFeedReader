@@ -1,11 +1,14 @@
 package ravitheja.com.rssfeedreader;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -33,6 +36,15 @@ public class MainActivity extends AppCompatActivity implements ParserListener {
             listView = (ListView) findViewById(R.id.listView);
             adapter = new ListAdapter(this.getApplicationContext());
             listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String url = adapter.getItem(position).getLink();
+                    Intent intent = new Intent(MainActivity.this,ItemViewer.class);
+                    intent.putExtra("url",url);
+                    MainActivity.this.startActivity(intent);
+                }
+            });
 
             // starting the background parsing thread...
             extractor = new FeedExtractor(feedURL,this);
@@ -49,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements ParserListener {
 
     @Override
     public void didStartParsing() {
-        displayToast("Please wait... fetching feeds");
+        //displayToast("Please wait... fetching feeds");
         progressDialog = ProgressDialog.show(this, "Loading", "Please wait", true);
     }
 
@@ -68,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements ParserListener {
 
     @Override
     public void didFinishParsing() {
-        displayToast("Parsing complete");
+        //displayToast("Parsing complete");
         adapter.clear();
         adapter.addItems(extractor.getFeedList());
         progressDialog.dismiss();

@@ -58,7 +58,7 @@ public class ListAdapter extends BaseAdapter implements ImageDownloadListener {
     }
 
     @Override
-    public Object getItem(int position) {
+    public RSSElement getItem(int position) {
         if(elements == null) {
             return null;
         }
